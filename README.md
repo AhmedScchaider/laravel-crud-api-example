@@ -1,4 +1,5 @@
 # laravel-api-example
+A simple laravel CRUD operations using API approch
 
 ### Setup project settings
 
