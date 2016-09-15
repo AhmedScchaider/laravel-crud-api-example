@@ -1,0 +1,145 @@
+{
+	"variables": [],
+	"info": {
+		"name": "laravel-api-example",
+		"_postman_id": "e5c51ef5-30fb-3291-efe3-7dae4bdd4f10",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost/api/authenticate",
+			"request": {
+				"url": "http://localhost/api/authenticate",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "alberto.bravi@gmail.com",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "password",
+							"value": "secret",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": "autenticazione, get token"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost/api/product",
+			"request": {
+				"url": "http://localhost/api/product",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer AUTH-TOKEN",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "product lorem",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": "POST, add an item"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost/api/product?limit=3",
+			"request": {
+				"url": "http://localhost/api/product?limit=3",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer AUTH-TOKEN",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": "GET show list"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost/api/product/b027a651-ebe1-4c47-acc9-e9073a63cc45",
+			"request": {
+				"url": "http://localhost/api/product/PRODUCT-ID",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer AUTH-TOKEN",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": "GET {ID}, show an item"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost/api/product/a0991c03-fab2-4e80-bcec-5e5e7bab5940",
+			"request": {
+				"url": "http://localhost/api/product/PRODUCT-ID?name=Prodotto Number One",
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer AUTH-TOKEN",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": "PATCH/PUT, edit an item"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost/api/product/84b95e25-974b-4744-86cf-8326f83a8825",
+			"request": {
+				"url": "http://localhost/api/product/PRODUCT-ID",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer AUTH-TOKEN",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": "DELETE, delete an item"
+			},
+			"response": []
+		}
+	]
+}
