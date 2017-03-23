@@ -1,7 +1,7 @@
 {
 	"variables": [],
 	"info": {
-		"name": "laravel-api-example",
+		"name": "laravel-crud-api-example",
 		"_postman_id": "e5c51ef5-30fb-3291-efe3-7dae4bdd4f10",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
