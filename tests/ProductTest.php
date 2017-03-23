@@ -1,33 +1,30 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-
 use App\Models\User;
 use App\Models\Product;
 
 class ProductTest extends TestCase
 {
 
-    //use DatabaseMigrations;
-
     public function boot() {
-        //Artisan::call('migrate:refresh --seed');
+
     }
 
-    public function testAddingAnProduct() 
+    public function testAddingAnProduct()
     {
-        $token = $this->getToken();
+        $user = User::first();
+
+        $token = \JWTAuth::fromUser($user);
 
         $this->json('POST', '/api/product/', ['name' => 'Prodotto da Test'], ['Authorization' => 'Bearer ' . $token])
             ->see('creato');
     }
 
-    public function testReturnSingleProducts() 
+    public function testReturnSingleProducts()
     {
-        $token = $this->getToken();
-        $user = \JWTAuth::parseToken()->authenticate();
+        $user = User::first();
+
+        $token = \JWTAuth::fromUser($user);
 
         $product = $user->products()->first();
 
@@ -36,10 +33,11 @@ class ProductTest extends TestCase
             ->see($product->id);
     }
 
-    public function testReturnSingleProductsFail() 
+    public function testReturnSingleProductsFail()
     {
-        $token = $this->getToken();
-        $user = \JWTAuth::parseToken()->authenticate();
+        $user = User::first();
+
+        $token = \JWTAuth::fromUser($user);
 
         $product = $user->products()->first();
 
@@ -48,90 +46,89 @@ class ProductTest extends TestCase
             ->see($product->id);
     }
 
-    public function testReturnManyProducts() 
+    public function testReturnManyProducts()
     {
-        $token = $this->getToken();
+        $user = User::first();
+
+        $token = \JWTAuth::fromUser($user);
 
         $this->json('GET', '/api/product', [], ['Authorization' => 'Bearer ' . $token])
             ->see('created_at');
     }
 
-    public function testUpdatingAnProduct() 
+    public function testUpdatingAnProduct()
     {
-        $token = $this->getToken();
-        
+        $user = User::first();
+
+        $token = \JWTAuth::fromUser($user);
+
         $product = $user->products()->first();
 
         $this->json('PATCH', '/api/product/' . $product->id, ['name' => 'Prodotto Modificato da Test'], ['Authorization' => 'Bearer ' . $token])
             ->see('aggiornato');
     }
 
-    public function testUpdatingAnProductWithANonOwnerUser() 
-    {
-        $token = $this->getToken();
-
-        $product = $user->products()->first();
-
-        $this->json('DELETE', '/api/product/' . substr($product->id, 0, 20), [], ['Authorization' => 'Bearer ' . $token])
-            ->see('item_not_found');
-    }
-
-    public function testDeletingAnProductWithWrongToken() 
+    public function testUpdatingAnProductWithANonOwnerUser()
     {
         $user = User::first();
 
         $token = \JWTAuth::fromUser($user);
-        
-        $anotherUser = User::where('id', '!=', $user->id)->first();
 
-        $anotherToken = \JWTAuth::fromUser($anotherUser);
-
-        $product = $user->products()->first();
-
-        $this->json('DELETE', '/api/product/' . $product->id, [], ['Authorization' => 'Bearer ' . $anotherToken])
-            ->see('This action is unauthorized');
-    }
-
-    public function testDeletingAnProductWithoutWrongId() 
-    {
-        $token = $this->getToken();
-        $user = \JWTAuth::parseToken()->authenticate();
-
-        $product = $user->products()->first();
+        $product = Product::where('user_id', '!=', $user->id)->first();
 
         $this->json('DELETE', '/api/product/' . substr($product->id, 0, 20), [], ['Authorization' => 'Bearer ' . $token])
             ->see('item_not_found');
     }
 
-    public function testDeletingAnProductWithANonOwnerUser() 
+    public function testDeletingAnProductWithWrongToken()
     {
-        $token = $this->getToken();
-        $user = \JWTAuth::parseToken()->authenticate();
+        $user = User::first();
+
+        $anotherUser = Product::where('user_id', '!=', $user->id)->first();
+
+        // from another user
+        $token = \JWTAuth::fromUser($anotherUser);
+
+        $product = $user->products()->first();
+
+        $this->json('DELETE', '/api/product/' . $product->id, [], ['Authorization' => 'Bearer ' . $token])
+            ->see('user_not_found');
+    }
+
+    public function testDeletingAnProductWithWrongId()
+    {
+        $user = User::first();
+
+        $token = \JWTAuth::fromUser($user);
+
+        $product = Product::where('user_id', '!=', $user->id)->first();
+
+        $this->json('DELETE', '/api/product/' . substr($product->id, 0, 20), [], ['Authorization' => 'Bearer ' . $token])
+            ->see('item_not_found');
+    }
+
+    public function testDeletingAnProductWithANonOwnerUser()
+    {
+        $user = User::first();
+
+        $token = \JWTAuth::fromUser($user);
 
         $product = Product::where('user_id', '!=', $user->id)->first();
 
         $this->json('DELETE', '/api/product/' . $product->id, [], ['Authorization' => 'Bearer ' . $token])
-            ->see('item_not_found');
+            ->see('This action is unauthorized');
     }
 
-    public function testDeletingAnProduct() 
+    public function testDeletingAnProduct()
     {
-        $token = $this->getToken();
-        $user = \JWTAuth::parseToken()->authenticate();
+        $user = User::first();
+
+        $token = \JWTAuth::fromUser($user);
         
         $product = $user->products()->first();
 
         $this->json('DELETE', '/api/product/' . $product->id, [], ['Authorization' => 'Bearer ' . $token])
             ->see('eliminato');
-    }
-
-    public function getToken() 
-    {
-        $user = User::first();
-
-        $token = \JWTAuth::fromUser($user);
-
-        return $token;
     }
 
 }
